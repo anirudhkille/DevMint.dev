@@ -1,4 +1,15 @@
-import { Home, ImageIcon, CodeIcon, WrenchIcon, Braces, Palette, ImagePlus, SwatchBook, QrCode, CaseSensitive } from "lucide-react";
+import {
+  Home,
+  ImageIcon,
+  CodeIcon,
+  WrenchIcon,
+  Braces,
+  Palette,
+  ImagePlus,
+  SwatchBook,
+  QrCode,
+  CaseSensitive,
+} from "lucide-react";
 
 export const navigation = [
   { title: "Home", href: "/", icon: Home },

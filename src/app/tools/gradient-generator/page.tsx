@@ -6,7 +6,7 @@ export const metadata = generateMetadata({
   title: "Gradient Generator | Devmint",
   description: "Create beautiful gradients with live preview and copy CSS code",
   path: "/tools/gradient-generator",
-  keywords: ["gradient generator", "linear gradient", "radial gradient","conic gradient",],
+  keywords: ["gradient generator", "linear gradient", "radial gradient", "conic gradient"],
 });
 
 export default function Page() {

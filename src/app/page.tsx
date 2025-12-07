@@ -54,7 +54,11 @@ export default function HomePage() {
                 asChild
                 className="bg-transparent backdrop-blur-sm"
               >
-                <Link href="https://github.com" target="_blank" rel="noopener noreferrer">
+                <Link
+                  href="https://github.com/anirudhkille/devmint.dev"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
                   <GithubIcon className="mr-2 h-4 w-4" />
                   GitHub
                 </Link>

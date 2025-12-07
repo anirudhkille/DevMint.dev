@@ -1,71 +1,77 @@
-"use client"
+"use client";
 
-import { useState } from "react"
-import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
-import { Slider } from "@/components/ui/slider"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { CheckIcon, CopyIcon, PlusIcon, TrashIcon } from "lucide-react"
+import { useState } from "react";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Slider } from "@/components/ui/slider";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { CheckIcon, CopyIcon, PlusIcon, TrashIcon } from "lucide-react";
 
-type GradientType = "linear" | "radial" | "conic"
+type GradientType = "linear" | "radial" | "conic";
 
 interface ColorStop {
-  color: string
-  position: number
+  color: string;
+  position: number;
 }
 
 export function GradientGenerator() {
-  const [gradientType, setGradientType] = useState<GradientType>("linear")
-  const [angle, setAngle] = useState(90)
+  const [gradientType, setGradientType] = useState<GradientType>("linear");
+  const [angle, setAngle] = useState(90);
   const [colorStops, setColorStops] = useState<ColorStop[]>([
     { color: "#3b82f6", position: 0 },
     { color: "#8b5cf6", position: 100 },
-  ])
-  const [copied, setCopied] = useState(false)
+  ]);
+  const [copied, setCopied] = useState(false);
 
   const generateGradientCSS = () => {
     const stops = colorStops
       .sort((a, b) => a.position - b.position)
       .map((stop) => `${stop.color} ${stop.position}%`)
-      .join(", ")
+      .join(", ");
 
     switch (gradientType) {
       case "linear":
-        return `linear-gradient(${angle}deg, ${stops})`
+        return `linear-gradient(${angle}deg, ${stops})`;
       case "radial":
-        return `radial-gradient(circle, ${stops})`
+        return `radial-gradient(circle, ${stops})`;
       case "conic":
-        return `conic-gradient(from ${angle}deg, ${stops})`
+        return `conic-gradient(from ${angle}deg, ${stops})`;
       default:
-        return ""
+        return "";
     }
-  }
+  };
 
-  const cssCode = `background: ${generateGradientCSS()};`
+  const cssCode = `background: ${generateGradientCSS()};`;
 
   const copyCSS = async () => {
-    await navigator.clipboard.writeText(cssCode)
-    setCopied(true)
-    setTimeout(() => setCopied(false), 2000)
-  }
+    await navigator.clipboard.writeText(cssCode);
+    setCopied(true);
+    setTimeout(() => setCopied(false), 2000);
+  };
 
   const addColorStop = () => {
     if (colorStops.length < 5) {
-      setColorStops([...colorStops, { color: "#10b981", position: 50 }])
+      setColorStops([...colorStops, { color: "#10b981", position: 50 }]);
     }
-  }
+  };
 
   const removeColorStop = (index: number) => {
     if (colorStops.length > 2) {
-      setColorStops(colorStops.filter((_, i) => i !== index))
+      setColorStops(colorStops.filter((_, i) => i !== index));
     }
-  }
+  };
 
   const updateColorStop = (index: number, updates: Partial<ColorStop>) => {
-    setColorStops(colorStops.map((stop, i) => (i === index ? { ...stop, ...updates } : stop)))
-  }
+    setColorStops(colorStops.map((stop, i) => (i === index ? { ...stop, ...updates } : stop)));
+  };
 
   return (
     <div className="grid gap-6 lg:grid-cols-2">
@@ -91,7 +97,13 @@ export function GradientGenerator() {
           {(gradientType === "linear" || gradientType === "conic") && (
             <div className="space-y-2">
               <Label>Angle: {angle}°</Label>
-              <Slider value={[angle]} onValueChange={([v]) => setAngle(v)} min={0} max={360} step={1} />
+              <Slider
+                value={[angle]}
+                onValueChange={([v]) => setAngle(v)}
+                min={0}
+                max={360}
+                step={1}
+              />
             </div>
           )}
 
@@ -124,7 +136,7 @@ export function GradientGenerator() {
                   onChange={(e) => updateColorStop(index, { color: e.target.value })}
                   className="flex-1 font-mono text-sm"
                 />
-                <div className="flex items-center gap-2 w-24">
+                <div className="flex w-24 items-center gap-2">
                   <Input
                     type="number"
                     value={stop.position}
@@ -155,7 +167,10 @@ export function GradientGenerator() {
             <CardTitle className="text-lg">Preview</CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="h-64 w-full rounded-lg border" style={{ background: generateGradientCSS() }} />
+            <div
+              className="h-64 w-full rounded-lg border"
+              style={{ background: generateGradientCSS() }}
+            />
           </CardContent>
         </Card>
 
@@ -177,10 +192,12 @@ export function GradientGenerator() {
             </Button>
           </CardHeader>
           <CardContent>
-            <pre className="overflow-auto rounded-lg border bg-muted/50 p-4 font-mono text-sm">{cssCode}</pre>
+            <pre className="bg-muted/50 overflow-auto rounded-lg border p-4 font-mono text-sm">
+              {cssCode}
+            </pre>
           </CardContent>
         </Card>
       </div>
     </div>
-  )
+  );
 }

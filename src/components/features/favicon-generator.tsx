@@ -1,85 +1,85 @@
-"use client"
+"use client";
 
-import type React from "react"
+import type React from "react";
 
-import { useState, useRef, useCallback } from "react"
-import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { UploadIcon, DownloadIcon, CopyIcon, CheckIcon, ImageIcon } from "lucide-react"
+import { useState, useRef, useCallback } from "react";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { UploadIcon, DownloadIcon, CopyIcon, CheckIcon, ImageIcon } from "lucide-react";
 
-const FAVICON_SIZES = [16, 32, 48, 64, 128, 180, 192, 512]
+const FAVICON_SIZES = [16, 32, 48, 64, 128, 180, 192, 512];
 
 interface GeneratedFavicon {
-  size: number
-  dataUrl: string
+  size: number;
+  dataUrl: string;
 }
 
 export function FaviconGenerator() {
-  const [originalImage, setOriginalImage] = useState<string | null>(null)
-  const [favicons, setFavicons] = useState<GeneratedFavicon[]>([])
-  const [copied, setCopied] = useState(false)
-  const [isDragging, setIsDragging] = useState(false)
-  const fileInputRef = useRef<HTMLInputElement>(null)
+  const [originalImage, setOriginalImage] = useState<string | null>(null);
+  const [favicons, setFavicons] = useState<GeneratedFavicon[]>([]);
+  const [copied, setCopied] = useState(false);
+  const [isDragging, setIsDragging] = useState(false);
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   const generateFavicons = useCallback((imageSrc: string) => {
-    const img = new Image()
-    img.crossOrigin = "anonymous"
+    const img = new Image();
+    img.crossOrigin = "anonymous";
     img.onload = () => {
-      const generatedFavicons: GeneratedFavicon[] = []
+      const generatedFavicons: GeneratedFavicon[] = [];
 
       FAVICON_SIZES.forEach((size) => {
-        const canvas = document.createElement("canvas")
-        canvas.width = size
-        canvas.height = size
-        const ctx = canvas.getContext("2d")
+        const canvas = document.createElement("canvas");
+        canvas.width = size;
+        canvas.height = size;
+        const ctx = canvas.getContext("2d");
         if (ctx) {
-          ctx.drawImage(img, 0, 0, size, size)
+          ctx.drawImage(img, 0, 0, size, size);
           generatedFavicons.push({
             size,
             dataUrl: canvas.toDataURL("image/png"),
-          })
+          });
         }
-      })
+      });
 
-      setFavicons(generatedFavicons)
-    }
-    img.src = imageSrc
-  }, [])
+      setFavicons(generatedFavicons);
+    };
+    img.src = imageSrc;
+  }, []);
 
   const handleFileChange = (file: File | null) => {
     if (file && file.type.startsWith("image/")) {
-      const reader = new FileReader()
+      const reader = new FileReader();
       reader.onload = (e) => {
-        const result = e.target?.result as string
-        setOriginalImage(result)
-        generateFavicons(result)
-      }
-      reader.readAsDataURL(file)
+        const result = e.target?.result as string;
+        setOriginalImage(result);
+        generateFavicons(result);
+      };
+      reader.readAsDataURL(file);
     }
-  }
+  };
 
   const handleDrop = useCallback(
     (e: React.DragEvent) => {
-      e.preventDefault()
-      setIsDragging(false)
-      const file = e.dataTransfer.files[0]
-      handleFileChange(file)
+      e.preventDefault();
+      setIsDragging(false);
+      const file = e.dataTransfer.files[0];
+      handleFileChange(file);
     },
-    [generateFavicons],
-  )
+    [generateFavicons]
+  );
 
   const downloadFavicon = (favicon: GeneratedFavicon) => {
-    const link = document.createElement("a")
-    link.download = `favicon-${favicon.size}x${favicon.size}.png`
-    link.href = favicon.dataUrl
-    link.click()
-  }
+    const link = document.createElement("a");
+    link.download = `favicon-${favicon.size}x${favicon.size}.png`;
+    link.href = favicon.dataUrl;
+    link.click();
+  };
 
   const downloadAll = () => {
     favicons.forEach((favicon) => {
-      setTimeout(() => downloadFavicon(favicon), 100)
-    })
-  }
+      setTimeout(() => downloadFavicon(favicon), 100);
+    });
+  };
 
   const htmlCode = `<!-- Favicon -->
 <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
@@ -87,13 +87,13 @@ export function FaviconGenerator() {
 <link rel="icon" type="image/png" sizes="48x48" href="/favicon-48x48.png">
 <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
 <link rel="icon" type="image/png" sizes="192x192" href="/android-chrome-192x192.png">
-<link rel="icon" type="image/png" sizes="512x512" href="/android-chrome-512x512.png">`
+<link rel="icon" type="image/png" sizes="512x512" href="/android-chrome-512x512.png">`;
 
   const copyHtml = async () => {
-    await navigator.clipboard.writeText(htmlCode)
-    setCopied(true)
-    setTimeout(() => setCopied(false), 2000)
-  }
+    await navigator.clipboard.writeText(htmlCode);
+    setCopied(true);
+    setTimeout(() => setCopied(false), 2000);
+  };
 
   return (
     <div className="grid gap-6 lg:grid-cols-2">
@@ -110,8 +110,8 @@ export function FaviconGenerator() {
                   : "border-muted-foreground/25 hover:border-muted-foreground/50"
               }`}
               onDragOver={(e) => {
-                e.preventDefault()
-                setIsDragging(true)
+                e.preventDefault();
+                setIsDragging(true);
               }}
               onDragLeave={() => setIsDragging(false)}
               onDrop={handleDrop}
@@ -131,13 +131,15 @@ export function FaviconGenerator() {
                     alt="Original"
                     className="h-32 w-32 rounded-lg object-cover"
                   />
-                  <p className="text-sm text-muted-foreground">Click or drop to replace</p>
+                  <p className="text-muted-foreground text-sm">Click or drop to replace</p>
                 </div>
               ) : (
                 <>
-                  <UploadIcon className="h-12 w-12 text-muted-foreground" />
-                  <p className="mt-4 text-sm text-muted-foreground">Drag and drop an image, or click to browse</p>
-                  <p className="mt-1 text-xs text-muted-foreground">PNG, JPG, or WebP</p>
+                  <UploadIcon className="text-muted-foreground h-12 w-12" />
+                  <p className="text-muted-foreground mt-4 text-sm">
+                    Drag and drop an image, or click to browse
+                  </p>
+                  <p className="text-muted-foreground mt-1 text-xs">PNG, JPG, or WebP</p>
                 </>
               )}
             </div>
@@ -163,7 +165,9 @@ export function FaviconGenerator() {
               </Button>
             </CardHeader>
             <CardContent>
-              <pre className="overflow-auto rounded-lg border bg-muted/50 p-4 font-mono text-xs">{htmlCode}</pre>
+              <pre className="bg-muted/50 overflow-auto rounded-lg border p-4 font-mono text-xs">
+                {htmlCode}
+              </pre>
             </CardContent>
           </Card>
         )}
@@ -173,7 +177,12 @@ export function FaviconGenerator() {
         <CardHeader className="flex flex-row items-center justify-between">
           <CardTitle className="text-lg">Generated Favicons</CardTitle>
           {favicons.length > 0 && (
-            <Button onClick={downloadAll} variant="outline" size="sm" className="gap-2 bg-transparent">
+            <Button
+              onClick={downloadAll}
+              variant="outline"
+              size="sm"
+              className="gap-2 bg-transparent"
+            >
               <DownloadIcon className="h-4 w-4" />
               Download All
             </Button>
@@ -185,7 +194,7 @@ export function FaviconGenerator() {
               {favicons.map((favicon) => (
                 <div
                   key={favicon.size}
-                  className="group flex flex-col items-center gap-2 rounded-lg border p-4 transition-colors hover:bg-accent/50"
+                  className="group hover:bg-accent/50 flex flex-col items-center gap-2 rounded-lg border p-4 transition-colors"
                 >
                   <div className="flex h-16 w-16 items-center justify-center">
                     <img
@@ -197,7 +206,7 @@ export function FaviconGenerator() {
                       }}
                     />
                   </div>
-                  <span className="text-xs text-muted-foreground">
+                  <span className="text-muted-foreground text-xs">
                     {favicon.size}x{favicon.size}
                   </span>
                   <Button
@@ -212,13 +221,13 @@ export function FaviconGenerator() {
               ))}
             </div>
           ) : (
-            <div className="flex min-h-[300px] flex-col items-center justify-center text-muted-foreground">
-              <ImageIcon className="h-12 w-12 mb-4" />
+            <div className="text-muted-foreground flex min-h-[300px] flex-col items-center justify-center">
+              <ImageIcon className="mb-4 h-12 w-12" />
               <p className="text-sm">Upload an image to generate favicons</p>
             </div>
           )}
         </CardContent>
       </Card>
     </div>
-  )
+  );
 }

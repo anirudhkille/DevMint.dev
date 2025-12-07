@@ -61,7 +61,11 @@ export function Header() {
               <ThemeToggle />
 
               <Button variant="ghost" size="icon" className="h-9 w-9" asChild>
-                <Link href="https://github.com" target="_blank" rel="noopener noreferrer">
+                <Link
+                  href="https://github.com/anirudhkille/devmint.dev"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
                   <Github className="h-4 w-4" />
                   <span className="sr-only">GitHub</span>
                 </Link>
