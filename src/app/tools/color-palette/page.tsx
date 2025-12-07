@@ -1,22 +1,22 @@
-import { ColorPaletteGenerator } from "@/components/features/color-palette";
+import { QrCodeGenerator } from "@/components/features/qr-code-generator";
 import ToolPageLayout from "@/layout/tool-layout";
 import { generateMetadata } from "@/lib/metadata";
 
 export const metadata = generateMetadata({
-  title: "Color Palette Generator | Devmint",
-  description: "Generate random palettes or extract colors from images",
-  path: "/tools/color-palette",
-  keywords: ["color palette"],
+  title: "QR Code Generator | Devmint",
+  description: "Generate QR codes for URLs, text, or any data instantly",
+  path: "/tools/qr-code",
+  keywords: ["qr code generator"],
 });
 
 export default function Page() {
   return (
     <ToolPageLayout
-      title="Color Palette Generator"
-      description="Generate random palettes or extract colors from images"
-      breadcrumbs={{ title: "Color Palette Generator" }}
+      title="QR Code Generator"
+      description="Generate QR codes for URLs, text, or any data instantly"
+      breadcrumbs={{ title: "QR Code Generator" }}
     >
-      <ColorPaletteGenerator />
+      <QrCodeGenerator />
     </ToolPageLayout>
   );
 }
