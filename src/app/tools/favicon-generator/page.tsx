@@ -1,22 +1,22 @@
-import { GradientGenerator } from "@/components/features/gradient-generator";
+import { FaviconGenerator } from "@/components/features/favicon-generator";
 import ToolPageLayout from "@/layout/tool-layout";
 import { generateMetadata } from "@/lib/metadata";
 
 export const metadata = generateMetadata({
-  title: "Gradient Generator | Devmint",
-  description: "Create beautiful gradients with live preview and copy CSS code",
+  title: "Favicon Generator | Devmint",
+  description: "Upload a PNG image and generate all favicon sizes with HTML link tags",
   path: "/tools/gradient-generator",
-  keywords: ["gradient generator", "minify json", "validate json"],
+  keywords: ["favicon generator"],
 });
 
 export default function Page() {
   return (
     <ToolPageLayout
-      title="Gradient Generator"
-      description="Create beautiful gradients with live preview and copy CSS code"
-      breadcrumbs={{ title: "Gradient Generator" }}
+      title="Favicon Generator"
+      description="Upload a PNG image and generate all favicon sizes with HTML link tags"
+      breadcrumbs={{ title: "Favicon Generator" }}
     >
-      <GradientGenerator />
+      <FaviconGenerator />
     </ToolPageLayout>
   );
 }
