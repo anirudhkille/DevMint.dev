@@ -1,36 +1,47 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# 🚀 Devmint.dev — Modern Developer Tools (Open Source)
 
-## Getting Started
+Devmint.dev is a fast, minimal, and beautifully designed collection of free developer tools.  
+No ads. No tracking. No bloat. Just tools that work.
 
-First, run the development server:
+Built with **Next.js**, **TypeScript**, and **Tailwind CSS**.
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+---
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## ✨ Features
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+- ⚡ Lightning-fast UI  
+- 🎨 Clean, modern, minimal design  
+- 🌗 Full dark mode support  
+- 📱 Fully responsive  
+- 📦 Modular tool architecture  
+- 🔍 SEO-optimized pages  
+- 🚀 Deployed on Vercel  
+- 🔒 Privacy-friendly (no analytics unless self-added)
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+---
 
-## Learn More
+## 🧰 Available Tools
 
-To learn more about Next.js, take a look at the following resources:
+### **🖼 Image Compressor**  
+Compress PNG, JPG, and WebP images with adjustable quality.
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+### **🏷 Meta Tag Generator**  
+Generate SEO-friendly meta tags & Open Graph preview.
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+### **🧱 JSON Formatter**  
+Format, minify, and validate JSON instantly.
 
-## Deploy on Vercel
+### **🎨 Gradient Generator**  
+Create smooth CSS gradients with live preview.
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+### **🖼 Favicon Generator**  
+Generate all favicon sizes from a single image.
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+### **🎨 Color Palette Generator**  
+Extract and generate color palettes easily.
+
+### **🔳 QR Code Generator**  
+Generate QR codes for URLs or text.
+
+### **🔠 Text Case Converter**  
+Convert text between multiple case formats.
