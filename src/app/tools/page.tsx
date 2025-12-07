@@ -3,23 +3,7 @@ import { Card, CardDescription, CardHeader, CardTitle } from "@/components/ui/ca
 import { ImageIcon, CodeIcon } from "lucide-react";
 import { generateMetadata } from "@/lib/metadata";
 import ToolPageLayout from "@/layout/tool-layout";
-
-const tools = [
-  {
-    title: "Image Compressor",
-    description:
-      "Compress PNG, JPG, and WebP images with adjustable quality settings. Reduce file sizes without losing quality.",
-    icon: ImageIcon,
-    href: "/tools/compressor",
-  },
-  {
-    title: "Meta Tag Generator",
-    description:
-      "Generate SEO-friendly meta tags and Open Graph tags for your website. Copy and paste ready-to-use HTML.",
-    icon: CodeIcon,
-    href: "/tools/meta-generator",
-  },
-];
+import { tools } from "@/config/site";
 
 export const metadata = generateMetadata({
   title: "All Tools | Devmint",

@@ -10,7 +10,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { CopyIcon, CheckIcon } from "lucide-react";
 
-export default function MetaTagGenerator() {
+export function MetaTagGenerator() {
   const [copied, setCopied] = useState(false);
   const [formData, setFormData] = useState({
     title: "",

@@ -1,4 +1,4 @@
-import MetaTagGenerator from "@/components/features/meta-tag-generator";
+import { MetaTagGenerator } from "@/components/features/meta-tag-generator";
 import ToolPageLayout from "@/layout/tool-layout";
 import { generateMetadata } from "@/lib/metadata";
 

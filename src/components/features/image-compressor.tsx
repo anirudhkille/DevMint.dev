@@ -9,7 +9,7 @@ import { Slider } from "@/components/ui/slider";
 import { Label } from "@/components/ui/label";
 import { UploadIcon, ImageIcon, DownloadIcon, XIcon } from "lucide-react";
 
-export default function ImageCompressor() {
+export function ImageCompressor() {
   const [originalImage, setOriginalImage] = useState<string | null>(null);
   const [compressedImage, setCompressedImage] = useState<string | null>(null);
   const [originalSize, setOriginalSize] = useState<number>(0);

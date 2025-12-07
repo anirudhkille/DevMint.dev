@@ -7,6 +7,7 @@ import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { Menu, Code, Home, ToolCase, Image } from "lucide-react";
+import { toolNavigation } from "@/config/site";
 
 interface NavItem {
   title: string;
@@ -14,13 +15,6 @@ interface NavItem {
   icon?: React.ComponentType<{ className?: string }>;
   items?: NavItem[];
 }
-
-const navigation: NavItem[] = [
-  { title: "Home", href: "/", icon: Home },
-  { title: "All Tools", href: "/tools", icon: ToolCase },
-  { title: "Image Compressor", href: "/tools/compressor", icon: Image },
-  { title: "Meta Tag Generator", href: "/tools/meta-generator", icon: Code },
-];
 
 interface MobileSidebarNavItemProps {
   item: NavItem;
@@ -64,7 +58,7 @@ export function MobileSidebar() {
         </Button>
       </SheetTrigger>
       <SheetContent side="left" className="w-80 pr-0">
-        <div className="flex items-center gap-2 border-b px-2 pb-4 mt-3">
+        <div className="mt-3 flex items-center gap-2 border-b px-2 pb-4">
           <div className="flex h-6 w-6 items-center justify-center rounded-sm border">
             <svg
               xmlns="http://www.w3.org/2000/svg"
@@ -79,7 +73,7 @@ export function MobileSidebar() {
           <span className="font-semibold">DevMint</span>
         </div>
         <nav className="mt-4 h-[calc(100vh-8rem)] space-y-2 overflow-y-auto pr-4">
-          {navigation.map((item) => (
+          {toolNavigation.map((item) => (
             <MobileSidebarNavItem key={item.title} item={item} onNavigate={() => setOpen(false)} />
           ))}
         </nav>

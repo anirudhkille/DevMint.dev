@@ -1,6 +1,6 @@
 import Link from "next/link";
 
-export default function Footer() {
+export function Footer() {
   return (
     <footer className="border-border/50 relative z-10 border-t backdrop-blur-sm">
       <div className="container mx-auto flex h-16 items-center justify-center px-4">

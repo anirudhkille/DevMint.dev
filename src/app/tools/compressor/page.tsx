@@ -1,4 +1,4 @@
-import ImageCompressor from "@/components/features/image-compressor";
+import { ImageCompressor } from "@/components/features/image-compressor";
 import ToolPageLayout from "@/layout/tool-layout";
 import { generateMetadata } from "@/lib/metadata";
 

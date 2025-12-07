@@ -11,8 +11,9 @@ import {
   CommandList,
   CommandSeparator,
 } from "@/components/ui/command";
-import { Code, Image, Moon, Sun } from "lucide-react";
+import { Code, Monitor, Moon, Sun } from "lucide-react";
 import { useTheme } from "next-themes";
+import { tools } from "@/config/site";
 
 interface SearchCommandProps {
   open: boolean;
@@ -20,14 +21,11 @@ interface SearchCommandProps {
 }
 
 const searchItems = {
-  tools: [
-    { title: "Image Compressor", href: "/tools/compressor", icon: Image },
-    { title: "Meta Tag Generator", href: "/tools/meta-generator", icon: Code },
-  ],
+  tools: tools,
   theme: [
     { title: "Light", icon: Sun },
     { title: "Dark", icon: Moon },
-    { title: "System", icon: Code },
+    { title: "System", icon: Monitor },
   ],
 };
 

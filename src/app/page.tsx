@@ -3,26 +3,12 @@ import { Button } from "@/components/ui/button";
 import { Card, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { ImageIcon, CodeIcon, GithubIcon, ArrowRightIcon, Sparkles, Zap } from "lucide-react";
 import { cn } from "@/lib/utils";
-
-const tools = [
-  {
-    title: "Image Compressor",
-    description: "Compress PNG, JPG, and WebP images with adjustable quality settings.",
-    icon: ImageIcon,
-    href: "/tools/compressor",
-  },
-  {
-    title: "Meta Tag Generator",
-    description: "Generate SEO-friendly meta tags and Open Graph tags for your website.",
-    icon: CodeIcon,
-    href: "/tools/meta-generator",
-  },
-];
+import { tools } from "@/config/site";
 
 export default function HomePage() {
   return (
     <>
-      <div className="relative flex h-140 w-full items-center justify-center bg-white dark:bg-black px-5">
+      <div className="relative flex h-140 w-full items-center justify-center bg-white px-5 dark:bg-black">
         <div
           className={cn(
             "absolute inset-0",

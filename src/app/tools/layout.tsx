@@ -1,5 +1,3 @@
-import Footer from "@/layout/footer";
-import { Header } from "@/layout/header";
 import { Sidebar } from "@/layout/sidebar";
 import * as React from "react";
 

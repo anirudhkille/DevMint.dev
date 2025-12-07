@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import "./globals.css";
 import { ThemeProvider } from "next-themes";
-import Footer from "@/layout/footer";
+import { Footer } from "@/layout/footer";
 import { Header } from "@/layout/header";
 
 export const metadata: Metadata = {
