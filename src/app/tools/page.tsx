@@ -1,6 +1,5 @@
 import Link from "next/link";
 import { Card, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { ImageIcon, CodeIcon } from "lucide-react";
 import { generateMetadata } from "@/lib/metadata";
 import ToolPageLayout from "@/layout/tool-layout";
 import { tools } from "@/config/site";

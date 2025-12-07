@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Card, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { ImageIcon, CodeIcon, GithubIcon, ArrowRightIcon, Sparkles, Zap } from "lucide-react";
+import { GithubIcon, ArrowRightIcon, Sparkles } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { tools } from "@/config/site";
 
