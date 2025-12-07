@@ -1,22 +1,22 @@
-import { GradientGenerator } from "@/components/features/gradient-generator";
+import { ColorPaletteGenerator } from "@/components/features/color-palette";
 import ToolPageLayout from "@/layout/tool-layout";
 import { generateMetadata } from "@/lib/metadata";
 
 export const metadata = generateMetadata({
-  title: "Gradient Generator | Devmint",
-  description: "Create beautiful gradients with live preview and copy CSS code",
-  path: "/tools/gradient-generator",
-  keywords: ["gradient generator", "minify json", "validate json"],
+  title: "Color Palette Generator | Devmint",
+  description: "Generate random palettes or extract colors from images",
+  path: "/tools/color-palette",
+  keywords: ["color palette"],
 });
 
 export default function Page() {
   return (
     <ToolPageLayout
-      title="Gradient Generator"
-      description="Create beautiful gradients with live preview and copy CSS code"
-      breadcrumbs={{ title: "Gradient Generator" }}
+      title="Color Palette Generator"
+      description="Generate random palettes or extract colors from images"
+      breadcrumbs={{ title: "Color Palette Generator" }}
     >
-      <GradientGenerator />
+      <ColorPaletteGenerator />
     </ToolPageLayout>
   );
 }
