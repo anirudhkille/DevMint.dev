@@ -105,7 +105,7 @@ export function TextCaseConverter() {
         </CardHeader>
         <CardContent>
           <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
-            {caseTypes.map(({ type, example }) => {
+            {caseTypes.map(({ type }) => {
               const result = convertCase(input, type);
               const isCopied = copiedType === type;
 

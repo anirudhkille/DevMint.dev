@@ -8,6 +8,7 @@ import { Button } from "@/components/ui/button";
 import { Slider } from "@/components/ui/slider";
 import { Label } from "@/components/ui/label";
 import { UploadIcon, ImageIcon, DownloadIcon, XIcon } from "lucide-react";
+import Image from "next/image";
 
 export function ImageCompressor() {
   const [originalImage, setOriginalImage] = useState<string | null>(null);
@@ -170,7 +171,7 @@ export function ImageCompressor() {
                 <div>
                   <p className="text-muted-foreground mb-2 text-sm font-medium">Original</p>
                   <div className="border-border bg-muted aspect-video overflow-hidden rounded-lg border">
-                    <img
+                    <Image
                       src={originalImage || "/placeholder.svg"}
                       alt="Original"
                       className="h-full w-full object-contain"
@@ -186,7 +187,7 @@ export function ImageCompressor() {
                   </p>
                   <div className="border-border bg-muted aspect-video overflow-hidden rounded-lg border">
                     {compressedImage ? (
-                      <img
+                      <Image
                         src={compressedImage || "/placeholder.svg"}
                         alt="Compressed"
                         className="h-full w-full object-contain"

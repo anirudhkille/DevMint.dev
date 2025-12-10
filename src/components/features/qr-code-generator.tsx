@@ -1,87 +1,19 @@
 "use client";
 
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
 import { Slider } from "@/components/ui/slider";
 import { Textarea } from "@/components/ui/textarea";
 import { DownloadIcon, QrCodeIcon } from "lucide-react";
-
-// Simple QR Code generation using canvas
-function generateQRCode(text: string, size: number, margin: number): string {
-  // Use a data URL approach with an external service for the actual QR
-  // This is a fallback - in production you'd use a library like 'qrcode'
-  const canvas = document.createElement("canvas");
-  const ctx = canvas.getContext("2d");
-  if (!ctx) return "";
-
-  canvas.width = size;
-  canvas.height = size;
-
-  // Create QR using a simple encoding for demo
-  // In production, use the 'qrcode' npm package
-  const qrSize = size - margin * 2;
-  const moduleCount = 25; // Simplified module count
-  const moduleSize = qrSize / moduleCount;
-
-  ctx.fillStyle = "#ffffff";
-  ctx.fillRect(0, 0, size, size);
-
-  ctx.fillStyle = "#000000";
-
-  // Generate pattern based on text hash
-  const hash = text.split("").reduce((a, b) => {
-    a = (a << 5) - a + b.charCodeAt(0);
-    return a & a;
-  }, 0);
-
-  // Draw finder patterns (corners)
-  const drawFinderPattern = (x: number, y: number) => {
-    const s = moduleSize;
-    ctx.fillRect(x, y, s * 7, s * 7);
-    ctx.fillStyle = "#ffffff";
-    ctx.fillRect(x + s, y + s, s * 5, s * 5);
-    ctx.fillStyle = "#000000";
-    ctx.fillRect(x + s * 2, y + s * 2, s * 3, s * 3);
-  };
-
-  drawFinderPattern(margin, margin);
-  drawFinderPattern(margin + (moduleCount - 7) * moduleSize, margin);
-  drawFinderPattern(margin, margin + (moduleCount - 7) * moduleSize);
-
-  // Generate data modules based on text
-  for (let row = 0; row < moduleCount; row++) {
-    for (let col = 0; col < moduleCount; col++) {
-      // Skip finder pattern areas
-      if (
-        (row < 8 && col < 8) ||
-        (row < 8 && col >= moduleCount - 8) ||
-        (row >= moduleCount - 8 && col < 8)
-      ) {
-        continue;
-      }
-
-      // Generate pseudo-random pattern based on position and text
-      const charIndex = (row * moduleCount + col) % text.length;
-      const charCode = text.charCodeAt(charIndex) || 0;
-      const shouldFill = (hash + charCode + row * col) % 3 === 0;
-
-      if (shouldFill) {
-        ctx.fillRect(margin + col * moduleSize, margin + row * moduleSize, moduleSize, moduleSize);
-      }
-    }
-  }
-
-  return canvas.toDataURL("image/png");
-}
+import Image from "next/image";
 
 export function QrCodeGenerator() {
   const [text, setText] = useState("https://devkitlab.dev");
   const [size, setSize] = useState(256);
   const [margin, setMargin] = useState(16);
   const [qrDataUrl, setQrDataUrl] = useState<string>("");
-  const canvasRef = useRef<HTMLCanvasElement>(null);
 
   useEffect(() => {
     if (text.trim()) {
@@ -165,7 +97,7 @@ export function QrCodeGenerator() {
         <CardContent>
           <div className="flex items-center justify-center rounded-lg border bg-white p-8">
             {text.trim() ? (
-              <img
+              <Image
                 src={qrDataUrl || "/placeholder.svg"}
                 alt="QR Code"
                 width={size}

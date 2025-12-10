@@ -45,7 +45,7 @@ export function Header() {
             </Link>
           </div>
 
-          <div className="flex flex-1 items-center justify-end gap-2">
+          <div className="ml-12 flex flex-1 items-center justify-end gap-2">
             <Button
               variant="outline"
               className="bg-muted/50 text-muted-foreground relative h-9 w-full justify-start rounded-md text-sm sm:w-64 md:w-80"
@@ -57,10 +57,15 @@ export function Header() {
                 <span className="text-xs">⌘</span>K
               </kbd>
             </Button>
-            <div className="hidden items-center gap-1 md:flex">
+            <div className="flex items-center gap-1">
               <ThemeToggle />
 
-              <Button variant="ghost" size="icon" className="h-9 w-9" asChild>
+              <Button
+                variant="ghost"
+                size="icon"
+                className="hidden h-9 w-9 justify-center md:flex"
+                asChild
+              >
                 <Link
                   href="https://github.com/anirudhkille/devmint.dev"
                   target="_blank"

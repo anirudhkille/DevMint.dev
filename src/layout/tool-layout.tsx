@@ -1,5 +1,4 @@
 import { Breadcrumbs } from "@/components/breadcrumbs";
-import { Metadata } from "next";
 import { ReactNode } from "react";
 
 type BreadcrumbItem = {
