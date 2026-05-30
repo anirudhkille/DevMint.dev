@@ -13,6 +13,7 @@ import {
   ShieldCheck,
   FileText,
   List,
+  FileCode,
 } from "lucide-react";
 
 export const navigation = [
@@ -96,6 +97,12 @@ export const tools = [
     description: "Searchable reference table of all HTTP status codes with descriptions.",
     icon: List,
     href: "/tools/http-status-codes",
+  },
+  {
+    title: "HTML Minifier",
+    description: "Minify and format HTML code instantly in your browser.",
+    icon: FileCode,
+    href: "/tools/html-minifier",
   },
 ];
 
