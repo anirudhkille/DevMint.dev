@@ -10,6 +10,7 @@ import {
   QrCode,
   CaseSensitive,
   ScanText,
+  ShieldCheck,
 } from "lucide-react";
 
 export const navigation = [
@@ -75,6 +76,12 @@ export const tools = [
     description: "Encode text to Base64 or decode Base64 strings instantly in your browser.",
     icon: ScanText,
     href: "/tools/base64",
+  },
+  {
+    title: "Bcrypt Generator",
+    description: "Generate bcrypt password hashes and verify bcrypt hashes instantly in your browser.",
+    icon: ShieldCheck,
+    href: "/tools/bcrypt-generator",
   },
 ];
 
