@@ -9,6 +9,7 @@ import {
   SwatchBook,
   QrCode,
   CaseSensitive,
+  ScanText,
 } from "lucide-react";
 
 export const navigation = [
@@ -68,6 +69,12 @@ export const tools = [
     description: "Convert text between camelCase, PascalCase, snake_case, kebab-case, and more.",
     icon: CaseSensitive,
     href: "/tools/text-case",
+  },
+  {
+    title: "Base64 Encoder / Decoder",
+    description: "Encode text to Base64 or decode Base64 strings instantly in your browser.",
+    icon: ScanText,
+    href: "/tools/base64",
   },
 ];
 

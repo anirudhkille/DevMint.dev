@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
@@ -8,6 +8,7 @@ import { Slider } from "@/components/ui/slider";
 import { Textarea } from "@/components/ui/textarea";
 import { DownloadIcon, QrCodeIcon } from "lucide-react";
 import Image from "next/image";
+import QRCode from "qrcode";
 
 export function QrCodeGenerator() {
   const [text, setText] = useState("https://devkitlab.dev");
@@ -15,28 +16,36 @@ export function QrCodeGenerator() {
   const [margin, setMargin] = useState(16);
   const [qrDataUrl, setQrDataUrl] = useState<string>("");
 
-  useEffect(() => {
-    if (text.trim()) {
-      // Use QR code API for actual QR codes
-      const qrUrl = `https://api.qrserver.com/v1/create-qr-code/?size=${size}x${size}&margin=${margin / 4}&data=${encodeURIComponent(text)}`;
-      setQrDataUrl(qrUrl);
+  const generateQR = useCallback(async () => {
+    if (!text.trim()) {
+      setQrDataUrl("");
+      return;
+    }
+    try {
+      const url = await QRCode.toDataURL(text, {
+        width: size,
+        margin: Math.round(margin / 4),
+        color: {
+          dark: "#000000",
+          light: "#ffffff",
+        },
+      });
+      setQrDataUrl(url);
+    } catch {
+      setQrDataUrl("");
     }
   }, [text, size, margin]);
 
+  useEffect(() => {
+    generateQR();
+  }, [generateQR]);
+
   const downloadQR = () => {
     if (!qrDataUrl) return;
-
-    // Fetch the image and download it
-    fetch(qrDataUrl)
-      .then((res) => res.blob())
-      .then((blob) => {
-        const url = URL.createObjectURL(blob);
-        const link = document.createElement("a");
-        link.download = "qrcode.png";
-        link.href = url;
-        link.click();
-        URL.revokeObjectURL(url);
-      });
+    const link = document.createElement("a");
+    link.download = "qrcode.png";
+    link.href = qrDataUrl;
+    link.click();
   };
 
   return (
@@ -88,7 +97,7 @@ export function QrCodeGenerator() {
             variant="outline"
             size="sm"
             className="gap-2 bg-transparent"
-            disabled={!text.trim()}
+            disabled={!text.trim() || !qrDataUrl}
           >
             <DownloadIcon className="h-4 w-4" />
             Download PNG
@@ -96,13 +105,14 @@ export function QrCodeGenerator() {
         </CardHeader>
         <CardContent>
           <div className="flex items-center justify-center rounded-lg border bg-white p-8">
-            {text.trim() ? (
+            {text.trim() && qrDataUrl ? (
               <Image
-                src={qrDataUrl || "/placeholder.svg"}
+                src={qrDataUrl}
                 alt="QR Code"
                 width={size}
                 height={size}
                 className="max-w-full"
+                unoptimized
               />
             ) : (
               <div className="text-muted-foreground flex flex-col items-center">
