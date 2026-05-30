@@ -11,6 +11,7 @@ import {
   CaseSensitive,
   ScanText,
   ShieldCheck,
+  FileText,
 } from "lucide-react";
 
 export const navigation = [
@@ -82,6 +83,12 @@ export const tools = [
     description: "Generate bcrypt password hashes and verify bcrypt hashes instantly in your browser.",
     icon: ShieldCheck,
     href: "/tools/bcrypt-generator",
+  },
+  {
+    title: "Robots.txt Generator",
+    description: "Generate robots.txt files for your website with a visual rule builder.",
+    icon: FileText,
+    href: "/tools/robots-txt",
   },
 ];
 

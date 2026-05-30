@@ -48,8 +48,16 @@ Extract and generate color palettes easily.
 
 ### **🔳 QR Code Generator**
 
-Generate QR codes for URLs or text.
+Generate QR codes for URLs or text. Client-side with no external API.
 
 ### **🔠 Text Case Converter**
 
 Convert text between multiple case formats.
+
+### **🔡 Base64 Encoder / Decoder**
+
+Encode text to Base64 or decode Base64 strings instantly.
+
+### **🔐 Bcrypt Generator**
+
+Generate bcrypt password hashes and verify bcrypt hashes in your browser.
