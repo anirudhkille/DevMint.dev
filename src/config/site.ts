@@ -12,6 +12,7 @@ import {
   ScanText,
   ShieldCheck,
   FileText,
+  List,
 } from "lucide-react";
 
 export const navigation = [
@@ -89,6 +90,12 @@ export const tools = [
     description: "Generate robots.txt files for your website with a visual rule builder.",
     icon: FileText,
     href: "/tools/robots-txt",
+  },
+  {
+    title: "HTTP Status Codes",
+    description: "Searchable reference table of all HTTP status codes with descriptions.",
+    icon: List,
+    href: "/tools/http-status-codes",
   },
 ];
 
