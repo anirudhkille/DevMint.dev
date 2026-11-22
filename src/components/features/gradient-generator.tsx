@@ -32,8 +32,8 @@ export function GradientGenerator() {
   const [copied, setCopied] = useState(false);
 
   const generateGradientCSS = () => {
-    const stops = [...colorStops]
-      .sort((a, b) => a.position - b.position)
+    const stops = colorStops
+      .toSorted((a, b) => a.position - b.position)
       .map((stop) => `${stop.color} ${stop.position}%`)
       .join(", ");
 

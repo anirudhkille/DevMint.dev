@@ -1,7 +1,8 @@
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Card, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { GithubIcon, ArrowRightIcon, Sparkles } from "lucide-react";
+import { ArrowRightIcon, Sparkles } from "lucide-react";
+import { GitHubIcon } from "@/components/github-icon";
 import { cn } from "@/lib/utils";
 import { tools } from "@/config/site";
 
@@ -59,7 +60,7 @@ export default function HomePage() {
                   target="_blank"
                   rel="noopener noreferrer"
                 >
-                  <GithubIcon className="mr-2 h-4 w-4" />
+                  <GitHubIcon className="mr-2 h-4 w-4" />
                   GitHub
                 </Link>
               </Button>

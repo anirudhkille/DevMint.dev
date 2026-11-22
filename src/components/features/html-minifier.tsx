@@ -28,7 +28,7 @@ function preserveBlocks(html: string) {
   const result = html.replace(
     /<(pre|textarea|script|style)\b[\s\S]*?<\/\1>/gi,
     (match) => {
-      const token = `\u0000${blocks.length}\u0000`;
+      const token = `__DEVMINT_BLOCK_${blocks.length}__`;
       blocks.push(match);
       return token;
     }
@@ -38,7 +38,7 @@ function preserveBlocks(html: string) {
 
 function restoreBlocks(html: string, blocks: string[]) {
   return blocks.reduce(
-    (acc, block, index) => acc.replace(`\u0000${index}\u0000`, () => block),
+    (acc, block, index) => acc.replace(`__DEVMINT_BLOCK_${index}__`, () => block),
     html
   );
 }
@@ -65,7 +65,7 @@ function formatHTML(html: string): string {
 
   for (const line of lines) {
     const stripped = line.trim();
-    const isBlockToken = /^\u0000\d+\u0000$/.test(stripped);
+    const isBlockToken = /^__DEVMINT_BLOCK_\d+__$/.test(stripped);
     const isClosing = stripped.startsWith("</");
     const isSelfClosing =
       stripped.endsWith("/>") || stripped.startsWith("<!") || stripped.startsWith("<?");

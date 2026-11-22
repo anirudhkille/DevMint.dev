@@ -5,9 +5,9 @@ import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { SearchCommand } from "./search-command";
 import { MobileSidebar } from "./mobile-sidebar";
-import { Github } from "lucide-react";
 import { ThemeToggle } from "@/components/theme-toggle";
 import { Logo } from "@/components/logo";
+import { GitHubIcon } from "@/components/github-icon";
 
 const emptySubscribe = () => () => {};
 
@@ -71,7 +71,7 @@ export function Header() {
                   target="_blank"
                   rel="noopener noreferrer"
                 >
-                  <Github className="h-4 w-4" />
+                  <GitHubIcon className="h-4 w-4" />
                   <span className="sr-only">GitHub</span>
                 </Link>
               </Button>

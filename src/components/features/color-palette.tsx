@@ -93,7 +93,7 @@ export function ColorPaletteGenerator() {
         }
 
         const sortedColors = Array.from(colorMap.entries())
-          .sort((a, b) => b[1] - a[1])
+          .toSorted((a, b) => b[1] - a[1])
           .slice(0, 5)
           .map(([key]) => {
             const [r, g, b] = key.split(",").map(Number);

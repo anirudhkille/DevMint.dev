@@ -17,7 +17,7 @@ import {
   XCircleIcon,
   RefreshCwIcon,
 } from "lucide-react";
-import bcrypt from "bcryptjs";
+import * as bcrypt from "bcryptjs";
 
 export function BcryptGenerator() {
   const [input, setInput] = useState("");
