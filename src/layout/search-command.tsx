@@ -59,8 +59,6 @@ export function SearchCommand({ open, onOpenChange }: SearchCommandProps) {
           ))}
         </CommandGroup>
         <CommandSeparator />
-
-        <CommandSeparator />
         <CommandGroup heading="Theme">
           {searchItems.theme.map((item) => (
             <CommandItem

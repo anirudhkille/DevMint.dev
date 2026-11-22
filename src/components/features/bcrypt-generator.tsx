@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Slider } from "@/components/ui/slider";
@@ -13,7 +13,6 @@ import {
   CopyIcon,
   HashIcon,
   ShieldCheckIcon,
-  AlertCircleIcon,
   CheckCircleIcon,
   XCircleIcon,
   RefreshCwIcon,
@@ -30,13 +29,13 @@ export function BcryptGenerator() {
   const [compareInput, setCompareInput] = useState("");
   const [compareHash, setCompareHash] = useState("");
   const [compareResult, setCompareResult] = useState<boolean | null>(null);
+  const [comparing, setComparing] = useState(false);
 
   const generateHash = async () => {
     if (!input.trim()) return;
     setGenerating(true);
     try {
-      const salt = bcrypt.genSaltSync(rounds);
-      const result = bcrypt.hashSync(input, salt);
+      const result = await bcrypt.hash(input, rounds);
       setHash(result);
     } catch {
       setHash("");
@@ -51,13 +50,16 @@ export function BcryptGenerator() {
     setTimeout(() => setGeneratedCopied(false), 2000);
   };
 
-  const handleCompare = () => {
+  const handleCompare = async () => {
     if (!compareInput.trim() || !compareHash.trim()) return;
+    setComparing(true);
     try {
-      const match = bcrypt.compareSync(compareInput, compareHash.trim());
+      const match = await bcrypt.compare(compareInput, compareHash.trim());
       setCompareResult(match);
     } catch {
       setCompareResult(false);
+    } finally {
+      setComparing(false);
     }
   };
 
@@ -122,7 +124,12 @@ export function BcryptGenerator() {
                   <Label>Bcrypt Hash</Label>
                   <div className="flex gap-2">
                     <Input readOnly value={hash} className="font-mono text-sm" />
-                    <Button onClick={copyHash} variant="outline" size="icon">
+                    <Button
+                      onClick={copyHash}
+                      variant="outline"
+                      size="icon"
+                      aria-label="Copy hash"
+                    >
                       {generatedCopied ? (
                         <CheckIcon className="h-4 w-4" />
                       ) : (
@@ -140,7 +147,10 @@ export function BcryptGenerator() {
                 <Input
                   placeholder="Enter original text..."
                   value={compareInput}
-                  onChange={(e) => setCompareInput(e.target.value)}
+                  onChange={(e) => {
+                    setCompareInput(e.target.value);
+                    setCompareResult(null);
+                  }}
                 />
               </div>
 
@@ -149,15 +159,26 @@ export function BcryptGenerator() {
                 <Textarea
                   placeholder="Paste bcrypt hash..."
                   value={compareHash}
-                  onChange={(e) => setCompareHash(e.target.value)}
+                  onChange={(e) => {
+                    setCompareHash(e.target.value);
+                    setCompareResult(null);
+                  }}
                   className="min-h-[80px] font-mono text-sm"
                 />
               </div>
 
               <div className="flex flex-wrap gap-2">
-                <Button onClick={handleCompare} disabled={!compareInput.trim() || !compareHash.trim()} className="gap-2">
-                  <ShieldCheckIcon className="h-4 w-4" />
-                  Compare
+                <Button
+                  onClick={handleCompare}
+                  disabled={!compareInput.trim() || !compareHash.trim() || comparing}
+                  className="gap-2"
+                >
+                  {comparing ? (
+                    <RefreshCwIcon className="h-4 w-4 animate-spin" />
+                  ) : (
+                    <ShieldCheckIcon className="h-4 w-4" />
+                  )}
+                  {comparing ? "Comparing..." : "Compare"}
                 </Button>
                 <Button onClick={resetCompare} variant="outline">
                   Clear

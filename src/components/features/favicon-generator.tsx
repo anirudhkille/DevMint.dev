@@ -6,23 +6,34 @@ import { useState, useRef, useCallback } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { UploadIcon, DownloadIcon, CopyIcon, CheckIcon, ImageIcon } from "lucide-react";
+import Image from "next/image";
 
 const FAVICON_SIZES = [16, 32, 48, 64, 128, 180, 192, 512];
+const MAX_FILE_SIZE = 10 * 1024 * 1024;
 
 interface GeneratedFavicon {
   size: number;
   dataUrl: string;
 }
 
+const faviconLinks = FAVICON_SIZES.map((size) =>
+  size === 180
+    ? `<link rel="apple-touch-icon" sizes="180x180" href="/favicon-180x180.png">`
+    : `<link rel="icon" type="image/png" sizes="${size}x${size}" href="/favicon-${size}x${size}.png">`
+);
+
+const htmlCode = `<!-- Favicon -->\n${faviconLinks.join("\n")}`;
+
 export function FaviconGenerator() {
   const [originalImage, setOriginalImage] = useState<string | null>(null);
   const [favicons, setFavicons] = useState<GeneratedFavicon[]>([]);
   const [copied, setCopied] = useState(false);
   const [isDragging, setIsDragging] = useState(false);
+  const [error, setError] = useState<string | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const generateFavicons = useCallback((imageSrc: string) => {
-    const img = new Image();
+    const img = new window.Image();
     img.crossOrigin = "anonymous";
     img.onload = () => {
       const generatedFavicons: GeneratedFavicon[] = [];
@@ -32,22 +43,37 @@ export function FaviconGenerator() {
         canvas.width = size;
         canvas.height = size;
         const ctx = canvas.getContext("2d");
-        if (ctx) {
-          ctx.drawImage(img, 0, 0, size, size);
-          generatedFavicons.push({
-            size,
-            dataUrl: canvas.toDataURL("image/png"),
-          });
-        }
+        if (!ctx) return;
+        ctx.drawImage(img, 0, 0, size, size);
+        generatedFavicons.push({
+          size,
+          dataUrl: canvas.toDataURL("image/png"),
+        });
       });
 
       setFavicons(generatedFavicons);
     };
+    img.onerror = () => {
+      setError("Could not read this image. Please try another file.");
+    };
     img.src = imageSrc;
   }, []);
 
-  const handleFileChange = (file: File | null) => {
-    if (file && file.type.startsWith("image/")) {
+  const handleFileChange = useCallback(
+    (file: File | null) => {
+      if (!file) return;
+
+      if (!file.type.startsWith("image/")) {
+        setError("Please select an image file.");
+        return;
+      }
+
+      if (file.size > MAX_FILE_SIZE) {
+        setError("Image is too large. Please select a file under 10 MB.");
+        return;
+      }
+
+      setError(null);
       const reader = new FileReader();
       reader.onload = (e) => {
         const result = e.target?.result as string;
@@ -55,17 +81,17 @@ export function FaviconGenerator() {
         generateFavicons(result);
       };
       reader.readAsDataURL(file);
-    }
-  };
+    },
+    [generateFavicons]
+  );
 
   const handleDrop = useCallback(
     (e: React.DragEvent) => {
       e.preventDefault();
       setIsDragging(false);
-      const file = e.dataTransfer.files[0];
-      handleFileChange(file);
+      handleFileChange(e.dataTransfer.files[0] ?? null);
     },
-    [generateFavicons]
+    [handleFileChange]
   );
 
   const downloadFavicon = (favicon: GeneratedFavicon) => {
@@ -76,18 +102,10 @@ export function FaviconGenerator() {
   };
 
   const downloadAll = () => {
-    favicons.forEach((favicon) => {
-      setTimeout(() => downloadFavicon(favicon), 100);
+    favicons.forEach((favicon, index) => {
+      setTimeout(() => downloadFavicon(favicon), index * 150);
     });
   };
-
-  const htmlCode = `<!-- Favicon -->
-<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
-<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
-<link rel="icon" type="image/png" sizes="48x48" href="/favicon-48x48.png">
-<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
-<link rel="icon" type="image/png" sizes="192x192" href="/android-chrome-192x192.png">
-<link rel="icon" type="image/png" sizes="512x512" href="/android-chrome-512x512.png">`;
 
   const copyHtml = async () => {
     await navigator.clipboard.writeText(htmlCode);
@@ -104,6 +122,9 @@ export function FaviconGenerator() {
           </CardHeader>
           <CardContent>
             <div
+              role="button"
+              tabIndex={0}
+              aria-label="Upload an image to generate favicons"
               className={`relative flex min-h-[250px] cursor-pointer flex-col items-center justify-center rounded-lg border-2 border-dashed transition-colors ${
                 isDragging
                   ? "border-primary bg-primary/10"
@@ -116,19 +137,28 @@ export function FaviconGenerator() {
               onDragLeave={() => setIsDragging(false)}
               onDrop={handleDrop}
               onClick={() => fileInputRef.current?.click()}
+              onKeyDown={(e) => {
+                if (e.key === "Enter" || e.key === " ") {
+                  e.preventDefault();
+                  fileInputRef.current?.click();
+                }
+              }}
             >
               <input
                 ref={fileInputRef}
                 type="file"
                 accept="image/*"
-                onChange={(e) => handleFileChange(e.target.files?.[0] || null)}
+                onChange={(e) => handleFileChange(e.target.files?.[0] ?? null)}
                 className="hidden"
               />
               {originalImage ? (
                 <div className="flex flex-col items-center gap-4">
-                  <img
-                    src={originalImage || "/placeholder.svg"}
+                  <Image
+                    src={originalImage}
                     alt="Original"
+                    width={128}
+                    height={128}
+                    unoptimized
                     className="h-32 w-32 rounded-lg object-cover"
                   />
                   <p className="text-muted-foreground text-sm">Click or drop to replace</p>
@@ -143,6 +173,7 @@ export function FaviconGenerator() {
                 </>
               )}
             </div>
+            {error && <p className="text-destructive mt-3 text-sm">{error}</p>}
           </CardContent>
         </Card>
 
@@ -197,9 +228,12 @@ export function FaviconGenerator() {
                   className="group hover:bg-accent/50 flex flex-col items-center gap-2 rounded-lg border p-4 transition-colors"
                 >
                   <div className="flex h-16 w-16 items-center justify-center">
-                    <img
-                      src={favicon.dataUrl || "/placeholder.svg"}
-                      alt={`${favicon.size}x${favicon.size}`}
+                    <Image
+                      src={favicon.dataUrl}
+                      alt={`${favicon.size}x${favicon.size} favicon`}
+                      width={favicon.size}
+                      height={favicon.size}
+                      unoptimized
                       className="max-h-full max-w-full"
                       style={{
                         imageRendering: favicon.size <= 32 ? "pixelated" : "auto",
@@ -213,7 +247,8 @@ export function FaviconGenerator() {
                     onClick={() => downloadFavicon(favicon)}
                     variant="ghost"
                     size="sm"
-                    className="h-7 opacity-0 transition-opacity group-hover:opacity-100"
+                    className="h-7 opacity-0 transition-opacity group-hover:opacity-100 focus:opacity-100"
+                    aria-label={`Download ${favicon.size}x${favicon.size} favicon`}
                   >
                     <DownloadIcon className="h-3 w-3" />
                   </Button>

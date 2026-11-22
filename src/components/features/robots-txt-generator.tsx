@@ -1,10 +1,9 @@
 "use client";
 
-import { useState, useMemo } from "react";
+import { useMemo, useRef, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
 import {
   Select,
   SelectContent,
@@ -31,57 +30,57 @@ const ruleLabels: Record<RuleType, string> = {
 };
 
 function generateRobotsTxt(rules: Rule[]): string {
-  const grouped: Record<string, Rule[]> = {};
-  let sitemaps: string[] = [];
+  const lines: string[] = [];
+  const sitemaps: string[] = [];
+  let hasAgent = false;
 
   for (const rule of rules) {
-    if (!rule.value.trim()) continue;
+    const value = rule.value.trim();
+    if (!value) continue;
+
     if (rule.type === "sitemap") {
-      sitemaps.push(rule.value.trim());
+      sitemaps.push(value);
       continue;
     }
-    const key = rule.type === "user-agent" ? rule.value.trim() : "__rules__";
-    if (!grouped[key]) grouped[key] = [];
-    grouped[key].push(rule);
+
+    if (rule.type === "user-agent") {
+      if (hasAgent && lines[lines.length - 1] !== "") {
+        lines.push("");
+      }
+      lines.push(`${ruleLabels["user-agent"]}: ${value}`);
+      hasAgent = true;
+      continue;
+    }
+
+    if (!hasAgent) {
+      lines.push(`${ruleLabels["user-agent"]}: *`);
+      hasAgent = true;
+    }
+
+    lines.push(`${ruleLabels[rule.type]}: ${value}`);
   }
 
-  const lines: string[] = [];
-
-  for (const [agent, agentRules] of Object.entries(grouped)) {
-    if (agent === "__rules__") {
-      for (const r of agentRules) {
-        if (r.value.trim()) {
-          lines.push(`${ruleLabels[r.type]}: ${r.value.trim()}`);
-        }
-      }
-    } else {
-      lines.push(`${ruleLabels["user-agent"]}: ${agent}`);
-      for (const r of agentRules) {
-        if (r.type !== "user-agent" && r.value.trim()) {
-          lines.push(`${ruleLabels[r.type]}: ${r.value.trim()}`);
-        }
-      }
+  if (sitemaps.length > 0) {
+    if (lines.length > 0 && lines[lines.length - 1] !== "") {
       lines.push("");
     }
-  }
-
-  for (const s of sitemaps) {
-    lines.push(`${ruleLabels["sitemap"]}: ${s}`);
+    for (const sitemap of sitemaps) {
+      lines.push(`${ruleLabels.sitemap}: ${sitemap}`);
+    }
   }
 
   return lines.join("\n").trim();
 }
-
-let nextId = 1;
 
 export function RobotsTxtGenerator() {
   const [rules, setRules] = useState<Rule[]>([
     { id: "1", type: "user-agent", value: "*" },
     { id: "2", type: "disallow", value: "" },
   ]);
+  const nextIdRef = useRef(3);
 
   const addRule = (type: RuleType) => {
-    setRules((prev) => [...prev, { id: String(++nextId), type, value: "" }]);
+    setRules((prev) => [...prev, { id: String(nextIdRef.current++), type, value: "" }]);
   };
 
   const updateRule = (id: string, field: "type" | "value", val: string) => {
@@ -161,6 +160,7 @@ export function RobotsTxtGenerator() {
                 variant="ghost"
                 size="icon"
                 className="h-10 w-10 shrink-0"
+                aria-label="Remove rule"
               >
                 <TrashIcon className="h-4 w-4" />
               </Button>

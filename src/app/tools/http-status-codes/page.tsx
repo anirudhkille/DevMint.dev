@@ -3,7 +3,7 @@ import ToolPageLayout from "@/layout/tool-layout";
 import { generateMetadata } from "@/lib/metadata";
 
 export const metadata = generateMetadata({
-  title: "HTTP Status Codes Reference | Devmint",
+  title: "HTTP Status Codes Reference | DevMint",
   description: "Searchable reference table of all HTTP status codes with descriptions",
   path: "/tools/http-status-codes",
   keywords: ["http status codes", "status code reference", "http reference"],

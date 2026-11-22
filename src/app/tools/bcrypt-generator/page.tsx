@@ -3,7 +3,7 @@ import ToolPageLayout from "@/layout/tool-layout";
 import { generateMetadata } from "@/lib/metadata";
 
 export const metadata = generateMetadata({
-  title: "Bcrypt Generator | Devmint",
+  title: "Bcrypt Generator | DevMint",
   description: "Generate bcrypt password hashes and verify bcrypt hashes instantly in your browser",
   path: "/tools/bcrypt-generator",
   keywords: ["bcrypt generator", "bcrypt hash", "password hasher"],

@@ -3,7 +3,7 @@ import ToolPageLayout from "@/layout/tool-layout";
 import { generateMetadata } from "@/lib/metadata";
 
 export const metadata = generateMetadata({
-  title: "QR Code Generator | Devmint",
+  title: "QR Code Generator | DevMint",
   description: "Generate QR codes for URLs, text, or any data instantly",
   path: "/tools/qr-code",
   keywords: ["qr code generator"],

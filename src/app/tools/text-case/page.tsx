@@ -3,7 +3,7 @@ import ToolPageLayout from "@/layout/tool-layout";
 import { generateMetadata } from "@/lib/metadata";
 
 export const metadata = generateMetadata({
-  title: "Text Case Converter | Devmint",
+  title: "Text Case Converter | DevMint",
   description: "Convert text between different case formats instantly",
   path: "/tools/text-case",
   keywords: ["text case converter"],

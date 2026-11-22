@@ -83,9 +83,6 @@ export default function HomePage() {
                 style={{ animationDelay: `${600 + index * 100}ms` }}
               >
                 <Card className="border-border/50 bg-card/50 hover:border-border hover:bg-card/80 hover:shadow-foreground/5 relative h-full overflow-hidden backdrop-blur-sm transition-all duration-300 hover:-translate-y-1 hover:shadow-lg">
-                  <div
-                    className={`absolute inset-0 bg-linear-to-br opacity-0 transition-opacity duration-300 group-hover:opacity-100`}
-                  />
                   <CardHeader className="relative">
                     <div className="bg-foreground/10 group-hover:bg-foreground/20 mb-4 flex h-12 w-12 items-center justify-center rounded-xl transition-colors">
                       <tool.icon className="text-foreground h-6 w-6" />

@@ -5,10 +5,10 @@ import ToolPageLayout from "@/layout/tool-layout";
 import { tools } from "@/config/site";
 
 export const metadata = generateMetadata({
-  title: "All Tools | Devmint",
+  title: "All Tools | DevMint",
   description: "Choose a tool to get started",
   path: "/tools",
-  keywords: ["image compressor", "meta tag genrator", "compress png"],
+  keywords: ["image compressor", "meta tag generator", "compress png"],
 });
 
 export default function ToolsPage() {

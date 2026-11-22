@@ -3,9 +3,9 @@ import ToolPageLayout from "@/layout/tool-layout";
 import { generateMetadata } from "@/lib/metadata";
 
 export const metadata = generateMetadata({
-  title: "Favicon Generator | Devmint",
+  title: "Favicon Generator | DevMint",
   description: "Upload a PNG image and generate all favicon sizes with HTML link tags",
-  path: "/tools/gradient-generator",
+  path: "/tools/favicon-generator",
   keywords: ["favicon generator"],
 });
 

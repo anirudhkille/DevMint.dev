@@ -1,6 +1,6 @@
-# 🚀 Devmint.dev — Modern Developer Tools (Open Source)
+# 🚀 DevMint.dev — Modern Developer Tools (Open Source)
 
-Devmint.dev is a fast, minimal, and beautifully designed collection of free developer tools.  
+DevMint.dev is a fast, minimal, and beautifully designed collection of free developer tools.  
 No ads. No tracking. No bloat. Just tools that work.
 
 Built with **Next.js**, **TypeScript**, and **Tailwind CSS**.
@@ -61,3 +61,15 @@ Encode text to Base64 or decode Base64 strings instantly.
 ### **🔐 Bcrypt Generator**
 
 Generate bcrypt password hashes and verify bcrypt hashes in your browser.
+
+### **🤖 Robots.txt Generator**
+
+Build valid robots.txt rules with user-agent groups, allow/disallow paths, crawl delays, and sitemaps.
+
+### **📋 HTTP Status Codes Reference**
+
+Search and filter HTTP status codes by category with clear explanations.
+
+### **🧹 HTML Minifier**
+
+Minify HTML for production or format it back into readable markup.

@@ -36,7 +36,6 @@
   },
   "devDependencies": {
     "@tailwindcss/postcss": "^4",
-    "@types/bcryptjs": "^2.4.6",
     "@types/node": "^24",
     "@types/qrcode": "^1.5.6",
     "@types/react": "^19",

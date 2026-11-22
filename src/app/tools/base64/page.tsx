@@ -3,7 +3,7 @@ import ToolPageLayout from "@/layout/tool-layout";
 import { generateMetadata } from "@/lib/metadata";
 
 export const metadata = generateMetadata({
-  title: "Base64 Encoder / Decoder | Devmint",
+  title: "Base64 Encoder / Decoder | DevMint",
   description: "Encode text to Base64 or decode Base64 strings instantly in your browser",
   path: "/tools/base64",
   keywords: ["base64 encoder", "base64 decoder", "base64 converter"],

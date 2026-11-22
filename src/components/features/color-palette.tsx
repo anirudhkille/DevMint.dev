@@ -12,6 +12,8 @@ interface Color {
   rgb: { r: number; g: number; b: number };
 }
 
+const MAX_FILE_SIZE = 10 * 1024 * 1024;
+
 function generateHarmoniousPalette(): Color[] {
   const baseHue = Math.random() * 360;
   const colors: Color[] = [];
@@ -47,6 +49,7 @@ export function ColorPaletteGenerator() {
   const [palette, setPalette] = useState<Color[]>(generateHarmoniousPalette);
   const [copiedIndex, setCopiedIndex] = useState<number | null>(null);
   const [isDragging, setIsDragging] = useState(false);
+  const [error, setError] = useState<string | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const generateNewPalette = () => {
@@ -54,26 +57,37 @@ export function ColorPaletteGenerator() {
   };
 
   const extractFromImage = useCallback((file: File) => {
+    if (!file.type.startsWith("image/")) {
+      setError("Please select an image file.");
+      return;
+    }
+
+    if (file.size > MAX_FILE_SIZE) {
+      setError("Image is too large. Please select a file under 10 MB.");
+      return;
+    }
+
+    setError(null);
     const reader = new FileReader();
     reader.onload = (e) => {
       const img = new Image();
       img.crossOrigin = "anonymous";
       img.onload = () => {
         const canvas = document.createElement("canvas");
-        const ctx = canvas.getContext("2d");
-        if (!ctx) return;
-
         canvas.width = 100;
         canvas.height = 100;
+        const ctx = canvas.getContext("2d");
+        if (!ctx) return;
         ctx.drawImage(img, 0, 0, 100, 100);
 
         const imageData = ctx.getImageData(0, 0, 100, 100).data;
         const colorMap = new Map<string, number>();
 
         for (let i = 0; i < imageData.length; i += 4) {
-          const r = Math.round(imageData[i] / 32) * 32;
-          const g = Math.round(imageData[i + 1] / 32) * 32;
-          const b = Math.round(imageData[i + 2] / 32) * 32;
+          if (imageData[i + 3] < 128) continue;
+          const r = Math.min(255, Math.round(imageData[i] / 32) * 32);
+          const g = Math.min(255, Math.round(imageData[i + 1] / 32) * 32);
+          const b = Math.min(255, Math.round(imageData[i + 2] / 32) * 32);
           const key = `${r},${g},${b}`;
           colorMap.set(key, (colorMap.get(key) || 0) + 1);
         }
@@ -88,6 +102,9 @@ export function ColorPaletteGenerator() {
           });
 
         setPalette(sortedColors);
+      };
+      img.onerror = () => {
+        setError("Could not read this image. Please try another file.");
       };
       img.src = e.target?.result as string;
     };
@@ -126,7 +143,7 @@ export function ColorPaletteGenerator() {
     link.download = "palette.json";
     link.href = url;
     link.click();
-    URL.revokeObjectURL(url);
+    setTimeout(() => URL.revokeObjectURL(url), 1000);
   };
 
   return (
@@ -156,7 +173,7 @@ export function ColorPaletteGenerator() {
           </div>
         </CardHeader>
         <CardContent>
-          <div className="grid grid-cols-5 gap-4">
+          <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-5">
             {palette.map((color, index) => (
               <div key={index} className="space-y-2">
                 <div
@@ -166,6 +183,7 @@ export function ColorPaletteGenerator() {
                 <div className="space-y-1">
                   <button
                     onClick={() => copyColor(color, index, "hex")}
+                    aria-label={`Copy ${color.hex} as HEX`}
                     className="hover:bg-accent/50 flex w-full items-center justify-between rounded px-2 py-1 font-mono text-xs"
                   >
                     <span>{color.hex.toUpperCase()}</span>
@@ -177,6 +195,7 @@ export function ColorPaletteGenerator() {
                   </button>
                   <button
                     onClick={() => copyColor(color, index, "rgb")}
+                    aria-label={`Copy ${color.hex} as RGB`}
                     className="text-muted-foreground hover:bg-accent/50 flex w-full items-center justify-between rounded px-2 py-1 font-mono text-xs"
                   >
                     <span>
@@ -196,6 +215,9 @@ export function ColorPaletteGenerator() {
         </CardHeader>
         <CardContent>
           <div
+            role="button"
+            tabIndex={0}
+            aria-label="Upload an image to extract colors"
             className={`flex min-h-[150px] cursor-pointer flex-col items-center justify-center rounded-lg border-2 border-dashed transition-colors ${
               isDragging
                 ? "border-primary bg-primary/10"
@@ -208,6 +230,12 @@ export function ColorPaletteGenerator() {
             onDragLeave={() => setIsDragging(false)}
             onDrop={handleDrop}
             onClick={() => fileInputRef.current?.click()}
+            onKeyDown={(e) => {
+              if (e.key === "Enter" || e.key === " ") {
+                e.preventDefault();
+                fileInputRef.current?.click();
+              }
+            }}
           >
             <input
               ref={fileInputRef}
@@ -224,6 +252,7 @@ export function ColorPaletteGenerator() {
               Drop an image or click to extract colors
             </p>
           </div>
+          {error && <p className="text-destructive mt-3 text-sm">{error}</p>}
         </CardContent>
       </Card>
     </div>

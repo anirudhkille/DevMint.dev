@@ -10,6 +10,14 @@ import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { CopyIcon, CheckIcon } from "lucide-react";
 
+function escapeText(value: string): string {
+  return value.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+}
+
+function escapeAttribute(value: string): string {
+  return escapeText(value).replace(/"/g, "&quot;");
+}
+
 export function MetaTagGenerator() {
   const [copied, setCopied] = useState(false);
   const [formData, setFormData] = useState({
@@ -30,42 +38,50 @@ export function MetaTagGenerator() {
     const lines: string[] = [];
 
     if (formData.title) {
-      lines.push(`<title>${formData.title}</title>`);
+      lines.push(`<title>${escapeText(formData.title)}</title>`);
     }
 
     if (formData.description) {
-      lines.push(`<meta name="description" content="${formData.description}" />`);
+      lines.push(`<meta name="description" content="${escapeAttribute(formData.description)}" />`);
     }
 
     if (formData.keywords) {
-      lines.push(`<meta name="keywords" content="${formData.keywords}" />`);
+      lines.push(`<meta name="keywords" content="${escapeAttribute(formData.keywords)}" />`);
     }
 
     if (formData.ogTitle || formData.title) {
-      lines.push(`<meta property="og:title" content="${formData.ogTitle || formData.title}" />`);
+      lines.push(
+        `<meta property="og:title" content="${escapeAttribute(formData.ogTitle || formData.title)}" />`
+      );
     }
 
     if (formData.ogDescription || formData.description) {
       lines.push(
-        `<meta property="og:description" content="${formData.ogDescription || formData.description}" />`
+        `<meta property="og:description" content="${escapeAttribute(
+          formData.ogDescription || formData.description
+        )}" />`
       );
     }
 
     if (formData.ogImage) {
-      lines.push(`<meta property="og:image" content="${formData.ogImage}" />`);
+      lines.push(`<meta property="og:image" content="${escapeAttribute(formData.ogImage)}" />`);
     }
 
     if (formData.ogTitle || formData.title) {
       lines.push(`<meta property="og:type" content="website" />`);
       lines.push(`<meta name="twitter:card" content="summary_large_image" />`);
-      lines.push(`<meta name="twitter:title" content="${formData.ogTitle || formData.title}" />`);
+      lines.push(
+        `<meta name="twitter:title" content="${escapeAttribute(formData.ogTitle || formData.title)}" />`
+      );
       if (formData.ogDescription || formData.description) {
         lines.push(
-          `<meta name="twitter:description" content="${formData.ogDescription || formData.description}" />`
+          `<meta name="twitter:description" content="${escapeAttribute(
+            formData.ogDescription || formData.description
+          )}" />`
         );
       }
       if (formData.ogImage) {
-        lines.push(`<meta name="twitter:image" content="${formData.ogImage}" />`);
+        lines.push(`<meta name="twitter:image" content="${escapeAttribute(formData.ogImage)}" />`);
       }
     }
 

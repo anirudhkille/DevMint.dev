@@ -3,7 +3,7 @@ import ToolPageLayout from "@/layout/tool-layout";
 import { generateMetadata } from "@/lib/metadata";
 
 export const metadata = generateMetadata({
-  title: "HTML Minifier | Devmint",
+  title: "HTML Minifier | DevMint",
   description: "Minify and format HTML code instantly in your browser",
   path: "/tools/html-minifier",
   keywords: ["html minifier", "html formatter", "html compressor"],

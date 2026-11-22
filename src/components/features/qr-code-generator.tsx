@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
@@ -11,34 +11,40 @@ import Image from "next/image";
 import QRCode from "qrcode";
 
 export function QrCodeGenerator() {
-  const [text, setText] = useState("https://devkitlab.dev");
+  const [text, setText] = useState("https://devmint.dev");
   const [size, setSize] = useState(256);
-  const [margin, setMargin] = useState(16);
+  const [margin, setMargin] = useState(4);
   const [qrDataUrl, setQrDataUrl] = useState<string>("");
 
-  const generateQR = useCallback(async () => {
-    if (!text.trim()) {
-      setQrDataUrl("");
-      return;
-    }
-    try {
-      const url = await QRCode.toDataURL(text, {
-        width: size,
-        margin: Math.round(margin / 4),
-        color: {
-          dark: "#000000",
-          light: "#ffffff",
-        },
-      });
-      setQrDataUrl(url);
-    } catch {
-      setQrDataUrl("");
-    }
-  }, [text, size, margin]);
-
   useEffect(() => {
-    generateQR();
-  }, [generateQR]);
+    let cancelled = false;
+
+    const timer = setTimeout(async () => {
+      if (!text.trim()) {
+        if (!cancelled) setQrDataUrl("");
+        return;
+      }
+
+      try {
+        const url = await QRCode.toDataURL(text, {
+          width: size,
+          margin,
+          color: {
+            dark: "#000000",
+            light: "#ffffff",
+          },
+        });
+        if (!cancelled) setQrDataUrl(url);
+      } catch {
+        if (!cancelled) setQrDataUrl("");
+      }
+    }, 150);
+
+    return () => {
+      cancelled = true;
+      clearTimeout(timer);
+    };
+  }, [text, size, margin]);
 
   const downloadQR = () => {
     if (!qrDataUrl) return;
@@ -77,14 +83,17 @@ export function QrCodeGenerator() {
           </div>
 
           <div className="space-y-2">
-            <Label>Margin: {margin}px</Label>
+            <Label>Quiet zone: {margin} modules</Label>
             <Slider
               value={[margin]}
               onValueChange={([v]) => setMargin(v)}
               min={0}
-              max={32}
-              step={4}
+              max={8}
+              step={1}
             />
+            <p className="text-muted-foreground text-xs">
+              Empty space around the QR code, measured in modules.
+            </p>
           </div>
         </CardContent>
       </Card>
@@ -97,7 +106,7 @@ export function QrCodeGenerator() {
             variant="outline"
             size="sm"
             className="gap-2 bg-transparent"
-            disabled={!text.trim() || !qrDataUrl}
+            disabled={!qrDataUrl}
           >
             <DownloadIcon className="h-4 w-4" />
             Download PNG

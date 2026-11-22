@@ -50,7 +50,7 @@ export const tools = [
   {
     title: "Favicon Generator",
     description:
-      "Upload a PNG and generate all favicon sizes from 16x16 to 512x512. Download as ZIP with HTML tags.",
+      "Upload an image and generate every favicon size. Download each size or copy ready-to-use HTML tags.",
     icon: ImagePlus,
     href: "/tools/favicon-generator",
   },

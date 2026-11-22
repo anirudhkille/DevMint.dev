@@ -66,7 +66,7 @@ const statusCodes: StatusCode[] = [
   { code: 503, title: "Service Unavailable", description: "The server is not ready to handle the request.", category: "5xx" },
   { code: 504, title: "Gateway Timeout", description: "The server is acting as a gateway and cannot get a response in time.", category: "5xx" },
   { code: 505, title: "HTTP Version Not Supported", description: "The HTTP version used in the request is not supported by the server.", category: "5xx" },
-  { code: 506, title: "Variant Also Negotiates", description: "The server has an internal configuration error.", category: "5xx" },
+  { code: 506, title: "Variant Also Negotiates", description: "The server has an internal configuration error: transparent content negotiation for the request is misconfigured.", category: "5xx" },
   { code: 507, title: "Insufficient Storage", description: "The server is unable to store the representation needed to complete the request.", category: "5xx" },
   { code: 508, title: "Loop Detected", description: "The server detected an infinite loop while processing the request.", category: "5xx" },
   { code: 510, title: "Not Extended", description: "Further extensions to the request are required for the server to fulfill it.", category: "5xx" },

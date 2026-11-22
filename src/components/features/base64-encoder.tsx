@@ -12,17 +12,25 @@ import {
   AlertCircleIcon,
 } from "lucide-react";
 
-function encodeBase64(text: string): string {
+function encodeBase64(text: string, urlSafe: boolean): string {
   const bytes = new TextEncoder().encode(text);
   let binary = "";
-  for (let i = 0; i < bytes.length; i++) {
-    binary += String.fromCharCode(bytes[i]);
+  const chunkSize = 0x8000;
+  for (let i = 0; i < bytes.length; i += chunkSize) {
+    binary += String.fromCharCode(...bytes.subarray(i, i + chunkSize));
   }
-  return btoa(binary);
+  const base64 = btoa(binary);
+  return urlSafe ? base64.replace(/\+/g, "-").replace(/\//g, "_").replace(/=+$/, "") : base64;
 }
 
-function decodeBase64(base64: string): string {
-  const binary = atob(base64.trim());
+function decodeBase64(input: string): string {
+  const normalized = input
+    .trim()
+    .replace(/\s+/g, "")
+    .replace(/-/g, "+")
+    .replace(/_/g, "/");
+  const padding = (4 - (normalized.length % 4)) % 4;
+  const binary = atob(normalized + "=".repeat(padding));
   const bytes = new Uint8Array(binary.length);
   for (let i = 0; i < binary.length; i++) {
     bytes[i] = binary.charCodeAt(i);
@@ -36,13 +44,14 @@ export function Base64Encoder() {
   const [error, setError] = useState<string | null>(null);
   const [copied, setCopied] = useState(false);
   const [mode, setMode] = useState<"encode" | "decode">("encode");
+  const [urlSafe, setUrlSafe] = useState(false);
 
   const handleEncode = () => {
     try {
-      setOutput(encodeBase64(input));
+      setOutput(encodeBase64(input, urlSafe));
       setError(null);
-    } catch (e) {
-      setError((e as Error).message);
+    } catch {
+      setError("Could not encode this input");
       setOutput("");
     }
   };
@@ -51,7 +60,7 @@ export function Base64Encoder() {
     try {
       setOutput(decodeBase64(input));
       setError(null);
-    } catch (e) {
+    } catch {
       setError("Invalid Base64 input");
       setOutput("");
     }
@@ -66,6 +75,12 @@ export function Base64Encoder() {
   const toggleMode = () => {
     setMode((m) => (m === "encode" ? "decode" : "encode"));
     setInput(output);
+    setOutput("");
+    setError(null);
+  };
+
+  const toggleUrlSafe = () => {
+    setUrlSafe((v) => !v);
     setOutput("");
     setError(null);
   };
@@ -108,6 +123,15 @@ export function Base64Encoder() {
               <ScanText className="h-4 w-4" />
               {mode === "encode" ? "Encode" : "Decode"}
             </Button>
+            {mode === "encode" && (
+              <Button
+                onClick={toggleUrlSafe}
+                variant={urlSafe ? "secondary" : "outline"}
+                className="gap-2"
+              >
+                URL-safe: {urlSafe ? "On" : "Off"}
+              </Button>
+            )}
             <Button onClick={clearAll} variant="outline">
               Clear
             </Button>

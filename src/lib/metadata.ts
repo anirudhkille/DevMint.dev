@@ -28,15 +28,15 @@ export function generateMetadata({
       canonical: fullUrl,
     },
 
-    authors: [{ name: "Devmint.dev", url: "https://devmint.dev" }],
-    creator: "Devmint.dev",
+    authors: [{ name: "DevMint.dev", url: "https://devmint.dev" }],
+    creator: "DevMint.dev",
 
     openGraph: {
       type: "website",
       url: fullUrl,
       title,
       description,
-      siteName: "Devmint.dev",
+      siteName: "DevMint.dev",
       images: [
         {
           url: image,
@@ -51,7 +51,7 @@ export function generateMetadata({
       card: "summary_large_image",
       title,
       description,
-      creator: "Devmint.dev",
+      creator: "DevMint.dev",
       images: [image],
     },
 

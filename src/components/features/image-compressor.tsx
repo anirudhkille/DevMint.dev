@@ -10,6 +10,8 @@ import { Label } from "@/components/ui/label";
 import { UploadIcon, ImageIcon, DownloadIcon, XIcon } from "lucide-react";
 import Image from "next/image";
 
+const MAX_FILE_SIZE = 20 * 1024 * 1024;
+
 export function ImageCompressor() {
   const [originalImage, setOriginalImage] = useState<string | null>(null);
   const [compressedImage, setCompressedImage] = useState<string | null>(null);
@@ -19,13 +21,21 @@ export function ImageCompressor() {
   const [fileName, setFileName] = useState<string>("");
   const [isCompressing, setIsCompressing] = useState(false);
   const [isDragging, setIsDragging] = useState(false);
+  const [error, setError] = useState<string | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const handleFileSelect = useCallback((file: File) => {
     if (!file.type.match(/image\/(png|jpeg|jpg|webp)/)) {
+      setError("Please select a PNG, JPG, or WebP image.");
       return;
     }
 
+    if (file.size > MAX_FILE_SIZE) {
+      setError("Image is too large. Please select a file under 20 MB.");
+      return;
+    }
+
+    setError(null);
     setFileName(file.name);
     setOriginalSize(file.size);
     setCompressedImage(null);
@@ -62,25 +72,35 @@ export function ImageCompressor() {
     if (!originalImage) return;
 
     setIsCompressing(true);
+    setError(null);
 
     const img = new window.Image();
     img.crossOrigin = "anonymous";
     img.onload = () => {
       const canvas = document.createElement("canvas");
-      canvas.width = img.width;
-      canvas.height = img.height;
+      canvas.width = img.naturalWidth || img.width;
+      canvas.height = img.naturalHeight || img.height;
 
       const ctx = canvas.getContext("2d");
-      if (!ctx) return;
+      if (!ctx) {
+        setError("Could not process this image.");
+        setIsCompressing(false);
+        return;
+      }
 
       ctx.drawImage(img, 0, 0);
 
-      const compressedDataUrl = canvas.toDataURL("image/jpeg", quality[0] / 100);
-      setCompressedImage(compressedDataUrl);
+      const compressedDataUrl = canvas.toDataURL("image/webp", quality[0] / 100);
+      const base64 = compressedDataUrl.split(",")[1] ?? "";
+      const padding = (base64.match(/=+$/) ?? [""])[0].length;
+      const sizeInBytes = Math.max(0, Math.floor((base64.length * 3) / 4) - padding);
 
-      const base64Length = compressedDataUrl.split(",")[1].length;
-      const sizeInBytes = (base64Length * 3) / 4;
+      setCompressedImage(compressedDataUrl);
       setCompressedSize(sizeInBytes);
+      setIsCompressing(false);
+    };
+    img.onerror = () => {
+      setError("Could not load this image. Please try another file.");
       setIsCompressing(false);
     };
     img.src = originalImage;
@@ -89,11 +109,13 @@ export function ImageCompressor() {
   const downloadImage = useCallback(() => {
     if (!compressedImage) return;
 
-    const link = document.createElement("a");
-    link.href = compressedImage;
+    const extension = compressedImage.startsWith("data:image/webp") ? "webp" : "png";
     const nameParts = fileName.split(".");
     nameParts.pop();
-    link.download = `${nameParts.join(".")}-compressed.jpg`;
+
+    const link = document.createElement("a");
+    link.href = compressedImage;
+    link.download = `${nameParts.join(".")}-compressed.${extension}`;
     link.click();
   }, [compressedImage, fileName]);
 
@@ -103,6 +125,7 @@ export function ImageCompressor() {
     setOriginalSize(0);
     setCompressedSize(0);
     setFileName("");
+    setError(null);
     if (fileInputRef.current) {
       fileInputRef.current.value = "";
     }
@@ -111,9 +134,9 @@ export function ImageCompressor() {
   const formatSize = (bytes: number) => {
     if (bytes === 0) return "0 B";
     const k = 1024;
-    const sizes = ["B", "KB", "MB"];
-    const i = Math.floor(Math.log(bytes) / Math.log(k));
-    return Number.parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + " " + sizes[i];
+    const sizes = ["B", "KB", "MB", "GB"];
+    const i = Math.min(Math.floor(Math.log(bytes) / Math.log(k)), sizes.length - 1);
+    return `${Number.parseFloat((bytes / Math.pow(k, i)).toFixed(2))} ${sizes[i]}`;
   };
 
   return (
@@ -148,6 +171,7 @@ export function ImageCompressor() {
             <Button variant="outline" onClick={() => fileInputRef.current?.click()}>
               Select Image
             </Button>
+            {error && <p className="text-destructive mt-4 text-sm">{error}</p>}
           </CardContent>
         </Card>
       ) : (
@@ -162,7 +186,7 @@ export function ImageCompressor() {
                     ({formatSize(originalSize)})
                   </span>
                 </div>
-                <Button variant="ghost" size="icon" onClick={resetImage}>
+                <Button variant="ghost" size="icon" onClick={resetImage} aria-label="Remove image">
                   <XIcon className="h-4 w-4" />
                 </Button>
               </div>
@@ -170,11 +194,14 @@ export function ImageCompressor() {
               <div className="grid gap-6 md:grid-cols-2">
                 <div>
                   <p className="text-muted-foreground mb-2 text-sm font-medium">Original</p>
-                  <div className="border-border bg-muted aspect-video overflow-hidden rounded-lg border">
+                  <div className="border-border bg-muted relative aspect-video overflow-hidden rounded-lg border">
                     <Image
-                      src={originalImage || "/placeholder.svg"}
+                      src={originalImage}
                       alt="Original"
-                      className="h-full w-full object-contain"
+                      fill
+                      unoptimized
+                      sizes="(max-width: 768px) 100vw, 50vw"
+                      className="object-contain"
                     />
                   </div>
                 </div>
@@ -185,12 +212,15 @@ export function ImageCompressor() {
                       <span className="text-primary ml-2">({formatSize(compressedSize)})</span>
                     )}
                   </p>
-                  <div className="border-border bg-muted aspect-video overflow-hidden rounded-lg border">
+                  <div className="border-border bg-muted relative aspect-video overflow-hidden rounded-lg border">
                     {compressedImage ? (
                       <Image
-                        src={compressedImage || "/placeholder.svg"}
+                        src={compressedImage}
                         alt="Compressed"
-                        className="h-full w-full object-contain"
+                        fill
+                        unoptimized
+                        sizes="(max-width: 768px) 100vw, 50vw"
+                        className="object-contain"
                       />
                     ) : (
                       <div className="text-muted-foreground flex h-full items-center justify-center text-sm">
@@ -219,7 +249,7 @@ export function ImageCompressor() {
                   className="w-full"
                 />
                 <p className="text-muted-foreground mt-2 text-xs">
-                  Lower quality = smaller file size
+                  Lower quality = smaller file size. Output is WebP, which keeps transparency.
                 </p>
               </div>
 
@@ -237,6 +267,8 @@ export function ImageCompressor() {
                   Download Compressed
                 </Button>
               </div>
+
+              {error && <p className="text-destructive mt-4 text-sm">{error}</p>}
 
               {compressedSize > 0 && originalSize > 0 && (
                 <div className="bg-muted mt-4 rounded-lg p-4 text-center">

@@ -3,9 +3,9 @@ import ToolPageLayout from "@/layout/tool-layout";
 import { generateMetadata } from "@/lib/metadata";
 
 export const metadata = generateMetadata({
-  title: "Image Compressor | Devmint",
+  title: "Image Compressor | DevMint",
   description: "Compress PNG, JPG, and WebP images instantly with adjustable quality.",
-  path: "/tools/image-compressor",
+  path: "/tools/compressor",
   keywords: ["image compressor", "compress jpg", "compress png"],
 });
 

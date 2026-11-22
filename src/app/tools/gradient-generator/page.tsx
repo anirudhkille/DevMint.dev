@@ -3,7 +3,7 @@ import ToolPageLayout from "@/layout/tool-layout";
 import { generateMetadata } from "@/lib/metadata";
 
 export const metadata = generateMetadata({
-  title: "Gradient Generator | Devmint",
+  title: "Gradient Generator | DevMint",
   description: "Create beautiful gradients with live preview and copy CSS code",
   path: "/tools/gradient-generator",
   keywords: ["gradient generator", "linear gradient", "radial gradient", "conic gradient"],

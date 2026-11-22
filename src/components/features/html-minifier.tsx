@@ -4,79 +4,109 @@ import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Textarea } from "@/components/ui/textarea";
-import {
-  CheckIcon,
-  CopyIcon,
-  MinimizeIcon,
-  WandIcon,
-  AlertCircleIcon,
-  FileCodeIcon,
-} from "lucide-react";
+import { CheckIcon, CopyIcon, MinimizeIcon, WandIcon } from "lucide-react";
+
+const VOID_TAGS = new Set([
+  "area",
+  "base",
+  "br",
+  "col",
+  "embed",
+  "hr",
+  "img",
+  "input",
+  "link",
+  "meta",
+  "param",
+  "source",
+  "track",
+  "wbr",
+]);
+
+function preserveBlocks(html: string) {
+  const blocks: string[] = [];
+  const result = html.replace(
+    /<(pre|textarea|script|style)\b[\s\S]*?<\/\1>/gi,
+    (match) => {
+      const token = `\u0000${blocks.length}\u0000`;
+      blocks.push(match);
+      return token;
+    }
+  );
+  return { result, blocks };
+}
+
+function restoreBlocks(html: string, blocks: string[]) {
+  return blocks.reduce(
+    (acc, block, index) => acc.replace(`\u0000${index}\u0000`, () => block),
+    html
+  );
+}
 
 function minifyHTML(html: string): string {
-  return html
+  const { result, blocks } = preserveBlocks(html);
+  const minified = result
     .replace(/<!--[\s\S]*?-->/g, "")
-    .replace(/>\s+</g, "><")
-    .replace(/\s{2,}/g, " ")
-    .replace(/\s+(<[^/])/g, "$1")
-    .replace(/(>)\s+/g, "$1")
-    .replace(/^(\s*[\r\n])+/gm, "")
+    .replace(/[ \t]+/g, " ")
+    .replace(/\s*\n\s*/g, " ")
     .trim();
+  return restoreBlocks(minified, blocks);
 }
 
 function formatHTML(html: string): string {
-  const clean = html.replace(/<!--[\s\S]*?-->/g, "").trim();
-  const tags = clean
+  const { result, blocks } = preserveBlocks(html);
+  const lines = result
+    .replace(/<!--[\s\S]*?-->/g, "")
     .replace(/>\s*</g, ">\n<")
     .split("\n")
-    .filter((l) => l.trim());
+    .filter((line) => line.trim());
   let indent = 0;
-  const result: string[] = [];
+  const formatted: string[] = [];
 
-  for (let line of tags) {
+  for (const line of lines) {
     const stripped = line.trim();
+    const isBlockToken = /^\u0000\d+\u0000$/.test(stripped);
     const isClosing = stripped.startsWith("</");
-    const isSelfClosing = stripped.endsWith("/>") || stripped.endsWith("</") || stripped.startsWith("<!") || stripped.startsWith("<?");
-    const isComment = stripped.startsWith("<!--");
+    const isSelfClosing =
+      stripped.endsWith("/>") || stripped.startsWith("<!") || stripped.startsWith("<?");
+    const tagName = stripped.match(/^<\/?([a-zA-Z0-9-]+)/)?.[1]?.toLowerCase();
+    const isVoid = tagName ? VOID_TAGS.has(tagName) : false;
 
-    if (isClosing && !isSelfClosing && !isComment) {
+    if (isBlockToken) {
+      formatted.push("  ".repeat(indent) + stripped);
+      continue;
+    }
+
+    if (isClosing) {
       indent = Math.max(0, indent - 1);
     }
 
-    result.push("  ".repeat(indent) + stripped);
+    formatted.push("  ".repeat(indent) + stripped);
 
-    if (!isClosing && !isSelfClosing && !isComment && !stripped.endsWith("/>") && !stripped.startsWith("</")) {
-      indent++;
+    if (!isClosing && !isSelfClosing && !isVoid) {
+      const isInlineClosed = tagName
+        ? new RegExp(`</${tagName}\\s*>$`, "i").test(stripped)
+        : false;
+      if (!isInlineClosed) {
+        indent++;
+      }
     }
   }
 
-  return result.join("\n");
+  return restoreBlocks(formatted.join("\n"), blocks);
 }
 
 export function HtmlMinifier() {
   const [input, setInput] = useState("");
   const [output, setOutput] = useState("");
-  const [error, setError] = useState<string | null>(null);
   const [copied, setCopied] = useState(false);
 
   const handleMinify = () => {
-    try {
-      setOutput(minifyHTML(input));
-      setError(null);
-    } catch (e) {
-      setError((e as Error).message);
-      setOutput("");
-    }
+    setOutput(minifyHTML(input));
   };
 
   const handleFormat = () => {
-    try {
-      setOutput(formatHTML(input));
-      setError(null);
-    } catch (e) {
-      setError((e as Error).message);
-      setOutput("");
-    }
+    setOutput(formatHTML(input));
   };
 
   const copyOutput = async () => {
@@ -88,7 +118,6 @@ export function HtmlMinifier() {
   const clearAll = () => {
     setInput("");
     setOutput("");
-    setError(null);
   };
 
   return (
@@ -117,13 +146,16 @@ export function HtmlMinifier() {
               Clear
             </Button>
           </div>
+          <p className="text-muted-foreground text-xs">
+            Whitespace inside pre, textarea, script, and style tags is preserved.
+          </p>
         </CardContent>
       </Card>
 
       <Card>
         <CardHeader className="flex flex-row items-center justify-between">
           <CardTitle className="text-lg">Output</CardTitle>
-          {output && !error && (
+          {output && (
             <Button onClick={copyOutput} variant="ghost" size="sm" className="gap-2">
               {copied ? (
                 <>
@@ -140,22 +172,12 @@ export function HtmlMinifier() {
           )}
         </CardHeader>
         <CardContent>
-          {error ? (
-            <div className="border-destructive/50 bg-destructive/10 flex items-start gap-3 rounded-lg border p-4">
-              <AlertCircleIcon className="text-destructive mt-0.5 h-5 w-5" />
-              <div>
-                <p className="text-destructive font-medium">Error</p>
-                <p className="text-muted-foreground mt-1 text-sm">{error}</p>
-              </div>
-            </div>
-          ) : (
-            <Textarea
-              readOnly
-              placeholder="Output will appear here..."
-              className="min-h-[400px] font-mono text-sm"
-              value={output}
-            />
-          )}
+          <Textarea
+            readOnly
+            placeholder="Output will appear here..."
+            className="min-h-[400px] font-mono text-sm"
+            value={output}
+          />
         </CardContent>
       </Card>
     </div>

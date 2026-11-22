@@ -10,15 +10,13 @@ interface NavItem {
   title: string;
   href?: string;
   icon?: React.ComponentType<{ className?: string }>;
-  items?: NavItem[];
 }
 
 interface SidebarNavItemProps {
   item: NavItem;
-  level?: number;
 }
 
-function SidebarNavItem({ item, level = 0 }: SidebarNavItemProps) {
+function SidebarNavItem({ item }: SidebarNavItemProps) {
   const pathname = usePathname();
   const isActive = item.href ? pathname === item.href : false;
 
@@ -31,8 +29,7 @@ function SidebarNavItem({ item, level = 0 }: SidebarNavItemProps) {
         "flex items-center gap-2 rounded-md px-2 py-1.5 text-sm transition-colors",
         isActive
           ? "bg-accent text-accent-foreground font-medium"
-          : "text-muted-foreground hover:bg-accent hover:text-accent-foreground",
-        level > 0 && !Icon && "pl-2"
+          : "text-muted-foreground hover:bg-accent hover:text-accent-foreground"
       )}
     >
       {Icon && <Icon className="h-4 w-4" />}

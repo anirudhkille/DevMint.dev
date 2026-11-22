@@ -3,7 +3,7 @@ import ToolPageLayout from "@/layout/tool-layout";
 import { generateMetadata } from "@/lib/metadata";
 
 export const metadata = generateMetadata({
-  title: "Meta Tag Generator | Devmint",
+  title: "Meta Tag Generator | DevMint",
   description: "Generate SEO-friendly meta tags and Open Graph tags for your website.",
   path: "/tools/meta-generator",
   keywords: ["meta tags", "seo", "open graph"],
