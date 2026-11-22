@@ -73,3 +73,23 @@ Search and filter HTTP status codes by category with clear explanations.
 ### **🧹 HTML Minifier**
 
 Minify HTML for production or format it back into readable markup.
+
+### **🆔 UUID Generator**
+
+Generate random UUID v4 identifiers in bulk with uppercase and hyphen-free options.
+
+### **🔐 Hash Generator**
+
+Generate MD5, SHA-1, SHA-256, SHA-384, and SHA-512 hashes from any text in your browser.
+
+### **🔑 JWT Decoder**
+
+Decode JSON Web Token headers, payloads, and claims in your browser. Inspect expiration without sending tokens anywhere.
+
+### **🔄 YAML to JSON Converter**
+
+Convert YAML to JSON or JSON to YAML instantly in your browser with clear error messages.
+
+### **🎨 Color Converter**
+
+Convert colors between HEX, RGB, and HSL and check WCAG contrast ratios in your browser.

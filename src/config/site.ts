@@ -14,6 +14,11 @@ import {
   FileText,
   List,
   FileCode,
+  Fingerprint,
+  Hash,
+  KeyRound,
+  ArrowLeftRight,
+  Contrast,
 } from "lucide-react";
 
 export const navigation = [
@@ -103,6 +108,40 @@ export const tools = [
     description: "Minify and format HTML code instantly in your browser.",
     icon: FileCode,
     href: "/tools/html-minifier",
+  },
+  {
+    title: "UUID Generator",
+    description:
+      "Generate random UUID v4 identifiers in bulk with uppercase and hyphen-free options.",
+    icon: Fingerprint,
+    href: "/tools/uuid-generator",
+  },
+  {
+    title: "Hash Generator",
+    description:
+      "Generate MD5, SHA-1, SHA-256, SHA-384, and SHA-512 hashes from any text.",
+    icon: Hash,
+    href: "/tools/hash-generator",
+  },
+  {
+    title: "JWT Decoder",
+    description:
+      "Decode JSON Web Token headers, payloads, and claims without sending them anywhere.",
+    icon: KeyRound,
+    href: "/tools/jwt-decoder",
+  },
+  {
+    title: "YAML to JSON Converter",
+    description: "Convert YAML to JSON or JSON to YAML instantly in your browser.",
+    icon: ArrowLeftRight,
+    href: "/tools/yaml-json",
+  },
+  {
+    title: "Color Converter",
+    description:
+      "Convert colors between HEX, RGB, and HSL and check WCAG contrast ratios.",
+    icon: Contrast,
+    href: "/tools/color-converter",
   },
 ];
 
